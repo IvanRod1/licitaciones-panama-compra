@@ -1,0 +1,11 @@
+{
+  "name": "licitaciones-panama-compra",
+  "version": "1.0.0",
+  "main": "licitacionesPC.js",
+  "scripts": {
+    "start": "node licitacionesPC.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.3.8"
+  }
+}
