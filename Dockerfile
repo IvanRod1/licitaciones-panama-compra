@@ -1,19 +1,9 @@
-# Usa Node oficial
-FROM node:20
-
-# Crea carpeta para app
+FROM ghcr.io/puppeteer/puppeteer:24.16.0
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 WORKDIR /usr/src/app
-
-# Copia archivos
 COPY package*.json ./
-COPY licitacionesPC.cjs ./
 
-# Instala Puppeteer (con Chromium incluido)
-RUN npm install
-
-# Expone el puerto si lo necesitás (opcional)
-# EXPOSE 3000
-
-# Comando por defecto
-CMD [ "npm", "start" ]
-
+RUN npm ci
+COPY . .
+CMD ["node", "licitacionesPC.cjs"]

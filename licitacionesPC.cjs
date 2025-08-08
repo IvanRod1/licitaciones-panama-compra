@@ -1,7 +1,13 @@
-
+const express = require('express');
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-//const isRender = process.env.RENDER === "true";
+const cors = require('cors');
+
+require('dotenv').config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 const urls = [
   "https://www.panamacompra.gob.pa/Inicio/#/oportunidades-de-negocio/servicios-basados-en-ingenieria-investigacion-y-tecnologia?q=9JSYtO8Zvx2buNWZ0BSeg42sDn2YhdWa0NXZ25WagwSYtOscllmbldmbpBiblBycvRWYzFmYgM3bpNWa2JXZTJiOiUGb0lGdiwSM4ojIvJnY1JFZJJye",
@@ -10,39 +16,48 @@ const urls = [
   "https://www.panamacompra.gob.pa/Inicio/#/oportunidades-de-negocio/telecomunicaciones-y-radiodifusion-de-tecnologia-de-la-informacion?q=Qfi42sDn2Yh1mcvZmbpBSYsBSZkBSYtO8Zvx2buNWZ0BSZkBibzOcazVnZpR2bpRWYyBSegMXZu9WajF2Yp5Wdt92YlxWZUJiOiUGb0lGdiwyM0ojIvJnY1JFZJJye"
 ];
 
-(async () => {
-  const browser = await puppeteer.launch({ headless: true, 
-    //executablePath: isRender ? '/usr/bin/google-chrome-stable' : undefined,
-    headless: true, 
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-
-  });
-  const page = await browser.newPage();
-  let allResults = [];
-
-  for (const url of urls) {
-    console.log(`Abriendo: ${url}`);
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 6000));  // Esperar a que cargue contenido dinámico
-
-    const results = await page.evaluate(() => {
-      const rows = document.querySelectorAll("tbody tr");
-      return Array.from(rows).map(row => {
-        const cells = row.querySelectorAll("td");
-        return {
-          numero: cells[0]?.innerText.trim(),
-          estado: cells[1]?.innerText.trim(),
-          descripcion: cells[2]?.innerText.trim(),
-          entidad: cells[3]?.innerText.trim(),
-        };
-      });
+app.get('/pc', async (req, res) => {
+  try {
+    const browser = await puppeteer.launch({ 
+      headless: true,
+      executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
+      args: ['--no-sandbox', '--disable-setuid-sandbox','--single-process','no-zugote']
     });
+    const page = await browser.newPage();
+    let allResults = [];
 
-    allResults = allResults.concat(results);
+    for (const url of urls) {
+      console.log(`Abriendo: ${url}`);
+      await page.goto(url, { waitUntil: 'networkidle2' });
+      await new Promise(resolve => setTimeout(resolve, 6000));
+
+      const results = await page.evaluate(() => {
+        const rows = document.querySelectorAll("tbody tr");
+        return Array.from(rows).map(row => {
+          const cells = row.querySelectorAll("td");
+          return {
+            numero: cells[0]?.innerText.trim(),
+            estado: cells[1]?.innerText.trim(),
+            descripcion: cells[2]?.innerText.trim(),
+            entidad: cells[3]?.innerText.trim(),
+          };
+        });
+      });
+      allResults = allResults.concat(results);
+    }
+    
+    await browser.close();
+    
+    // Envía la respuesta como un JSON
+    res.json(allResults);
+
+  } catch (error) {
+    console.error('Error durante el scraping:', error);
+    res.status(500).json({ error: 'Error al obtener los datos de licitaciones' });
   }
+});
 
-  await browser.close();
-
-  fs.writeFileSync("licitaciones.json", JSON.stringify(allResults, null, 2), "utf-8");
-  console.log("✅ Datos guardados en licitaciones.json");
-})();
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+  console.log(`Endpoint de licitaciones: http://localhost:${port}/pc`);
+});
