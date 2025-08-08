@@ -1,17 +1,13 @@
 {
-  "name": "licitaciones-panama-compra",
+  "name": "puppeteer-scraper-pc",
   "version": "1.0.0",
-  "description": "Scraper de licitaciones desde PanamaCompra",
+  "description": "Scraper de licitaciones de Panamá Compra",
   "main": "licitacionesPC.js",
+  "type": "module",
   "scripts": {
-    "postinstall": "PUPPETEER_SKIP_DOWNLOAD=true",
     "start": "node licitacionesPC.js"
   },
-  "keywords": [],
-  "author": "Ivan Rodriguez",
-  "license": "MIT",
   "dependencies": {
     "puppeteer": "^21.3.8"
   }
-
 }
