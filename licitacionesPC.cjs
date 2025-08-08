@@ -1,6 +1,7 @@
 
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const isRender = process.env.RENDER === "true";
 
 const urls = [
   "https://www.panamacompra.gob.pa/Inicio/#/oportunidades-de-negocio/servicios-basados-en-ingenieria-investigacion-y-tecnologia?q=9JSYtO8Zvx2buNWZ0BSeg42sDn2YhdWa0NXZ25WagwSYtOscllmbldmbpBiblBycvRWYzFmYgM3bpNWa2JXZTJiOiUGb0lGdiwSM4ojIvJnY1JFZJJye",
@@ -10,8 +11,8 @@ const urls = [
 ];
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: true 
-    , executablePath: '/usr/bin/chromium-browser',
+  const browser = await puppeteer.launch({ headless: true, 
+    executablePath: isRender ? '/usr/bin/google-chrome-stable' : undefined,
     headless: true, 
     args: ['--no-sandbox', '--disable-setuid-sandbox']
 
@@ -22,7 +23,7 @@ const urls = [
   for (const url of urls) {
     console.log(`Abriendo: ${url}`);
     await page.goto(url, { waitUntil: 'networkidle2' });
-    await page.waitForTimeout(6000); // Esperar a que cargue contenido dinámico
+    await new Promise(resolve => setTimeout(resolve, 6000));  // Esperar a que cargue contenido dinámico
 
     const results = await page.evaluate(() => {
       const rows = document.querySelectorAll("tbody tr");

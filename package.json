@@ -7,7 +7,6 @@
     "start": "node licitacionesPC.cjs"
   },
   "dependencies": {
-    "puppeteer": "^24.9.0"
+    "puppeteer": "^24.16.0"
   }
-
 }
