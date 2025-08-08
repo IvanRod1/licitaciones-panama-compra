@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "Scraper de licitaciones de Panamá Compra",
   "main": "licitacionesPC.js",
-  "type": "module",
   "scripts": {
     "start": "node licitacionesPC.js"
   },
   "dependencies": {
-    "puppeteer": "^21.3.8"
+    "puppeteer": "^24.9.0"
   }
 }
