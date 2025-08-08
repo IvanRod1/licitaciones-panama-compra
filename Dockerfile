@@ -9,4 +9,4 @@ COPY package.json ./
 
 RUN npm install
 COPY . .
-CMD ["node", "licitacionesPC.cjs"]
+CMD ["npx","node", "licitacionesPC.cjs"]
