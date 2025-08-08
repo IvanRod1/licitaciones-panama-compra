@@ -16,13 +16,15 @@ const urls = [
   "https://www.panamacompra.gob.pa/Inicio/#/oportunidades-de-negocio/telecomunicaciones-y-radiodifusion-de-tecnologia-de-la-informacion?q=Qfi42sDn2Yh1mcvZmbpBSYsBSZkBSYtO8Zvx2buNWZ0BSZkBibzOcazVnZpR2bpRWYyBSegMXZu9WajF2Yp5Wdt92YlxWZUJiOiUGb0lGdiwyM0ojIvJnY1JFZJJye"
 ];
 
-app.get('/pc', async (req, res) => {
-  try {
-    const browser = await puppeteer.launch({ 
+  const browser = await puppeteer.launch({ 
       headless: true,
       executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox','--single-process','no-zugote']
     });
+
+app.get('/pc', async (req, res) => {
+  try {
+    
     const page = await browser.newPage();
     let allResults = [];
 
@@ -46,8 +48,6 @@ app.get('/pc', async (req, res) => {
       allResults = allResults.concat(results);
     }
     
-    await browser.close();
-    
     // Envía la respuesta como un JSON
     res.json(allResults);
 
@@ -55,6 +55,9 @@ app.get('/pc', async (req, res) => {
     console.error('Error durante el scraping:', error);
     res.status(500).json({ error: 'Error al obtener los datos de licitaciones' });
   }
+    finally{
+      await browser.close();
+    }
 });
 
 app.listen(port, () => {
