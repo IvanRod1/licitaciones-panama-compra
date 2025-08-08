@@ -1,33 +1,19 @@
-# Imagen base con Node + Chromium
-FROM node:20-slim
+# Usa Node oficial
+FROM node:20
 
-RUN apt-get update && apt-get install -y \
-    chromium \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Crear el directorio de la app
+# Crea carpeta para app
 WORKDIR /usr/src/app
 
-# Copiar los archivos
+# Copia archivos
 COPY package*.json ./
+COPY licitacionesPC.js ./
+
+# Instala Puppeteer (con Chromium incluido)
 RUN npm install
 
-COPY . .
+# Expone el puerto si lo necesitás (opcional)
+# EXPOSE 3000
 
-# Ejecutar tu script
-CMD ["node", "licitacionesPC.js"]
+# Comando por defecto
+CMD [ "npm", "start" ]
+
