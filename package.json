@@ -5,7 +5,7 @@
   "main": "licitacionesPC.cjs",
   "scripts": {
     "start": "node licitacionesPC.cjs",
-    "postinstall": "puppeteer browsers install chrome"
+    "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
     "puppeteer": "^24.16.0"
