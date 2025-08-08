@@ -17,10 +17,11 @@ const urls = [
 ];
 
 app.get('/pc', async (req, res) => {
+  let browser;
   try {
-    const browser = await puppeteer.launch({ 
+    browser = await puppeteer.launch({ 
       headless: true,
-      executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
+      //executablePath: process.env.NODE_ENV === 'production' ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox','--single-process','no-zugote']
     });
     
@@ -55,7 +56,10 @@ app.get('/pc', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los datos de licitaciones' });
   }
     finally{
-      await browser.close();
+      if (browser){
+        await browser.close();
+      }
+      
     }
 });
 
