@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 # Copia archivos
 COPY package*.json ./
-COPY licitacionesPC.js ./
+COPY licitacionesPC.cjs ./
 
 # Instala Puppeteer (con Chromium incluido)
 RUN npm install
