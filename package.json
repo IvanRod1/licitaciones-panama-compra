@@ -2,9 +2,9 @@
   "name": "puppeteer-scraper-pc",
   "version": "1.0.0",
   "description": "Scraper de licitaciones de Panamá Compra",
-  "main": "licitacionesPC.cjs",
+  "main": "licitacionesPC.js",
   "scripts": {
-    "start": "node licitacionesPC.cjs"
+    "start": "node licitacionesPC.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
